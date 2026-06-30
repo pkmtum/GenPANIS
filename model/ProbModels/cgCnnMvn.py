@@ -10,7 +10,7 @@ import hamiltorch
 from utils.variousFunctions import calcUncertaintyMetric
 
 
-### Training by using Fu loss only
+
 
 class probabModel(pl.LightningModule):
     def __init__(self, pde, poly_pow=None, stdInit=2, display_plots=False, gradLr=0., lr=0.001, sigma_r=0, sigma_w=0, yFMode=True, randResBatchSize=None, reducedDim=None, dataset=None, dimz=100, useL=True, useVO=False, useUnlabeled=False):  # It was stdInit=8
@@ -173,7 +173,7 @@ class probabModel(pl.LightningModule):
 
         loss = 1.
         beta = 1.0
-
+        ### Utilization of labeled data ###
         if useL:
             gksig = self.neuralNet(x, give_X=True, KLE=False,  mn=self.zmin, mx=self.zmax)[0]
             gksig = gksig.unsqueeze(1)
@@ -188,6 +188,7 @@ class probabModel(pl.LightningModule):
             entropy = (z.size(-1)/2*(torch.log(2*torch.pi*torch.pow(10, self.neuralNet.sigmaEncoder))+1.))*z.size(0)
             ### probabilistic encoder ###
             loss = loss + (likelihood + beta*(prior - entropy) + likelihood_y)
+        ### Utilization of labeled data ###
 
         ### Utilization of unlabeled data ###
 
@@ -260,9 +261,6 @@ class probabModel(pl.LightningModule):
 
     @torch.no_grad()
     def sample(self, num_samples, z=None):
-        """
-        Sample a batch of images from the flow.
-        """
         if z is None:
             z = self.flow.rsample(num_samples=num_samples)[0].unsqueeze(1)
             z = self.flow.unormalize(z, mn=self.zmin, mx=self.zmax)
@@ -279,9 +277,6 @@ class probabModel(pl.LightningModule):
 
     @torch.no_grad()
     def sample_zOnly(self, num_samples, z=None):
-        """
-        Sample a batch of images from the flow.
-        """
         if z is None:
             z = self.flow.rsample(num_samples=num_samples)[0].unsqueeze(1)
             z = self.flow.unormalize(z, mn=self.zmin, mx=self.zmax)
@@ -331,9 +326,6 @@ class probabModel(pl.LightningModule):
         - 0.5 * torch.einsum('...i,...i->...', torch.einsum('...i,...ij->...j', (data-ypred).flatten(-3), torch.diag(1/torch.pow(10, self.neuralNet.diagSigma))), (data-ypred).flatten(-3)))
 
     def loglikelihood_y_noisy(self, data, ypred, X=None, idx=None):
-        # Originally the constant term 0.5 * data.flatten().size(0) * torch.log(torch.tensor(self.sigmaNoise)**2) but and now we removed the **2 from self.sigmaNoise
-        # It doesn't matter because this is a constant term and doesn't affect the inference
-        # self.sigmaNoise is \sigma_n^2
         if idx is None:
             return - torch.sum((data-ypred)**2)/(2*self.var_n)
         else:
@@ -720,8 +712,6 @@ class probabModel(pl.LightningModule):
             return z.unsqueeze(1), x, X, y
 
     def add_noise_dB(self, u_ref, SNR_in_dB, return_sigma=False):
-        # u_ref is torch tensor!
-        # change SNR in dB to SNR ## SNR=10 --> 10 db, SNR=100 --> 20 db, SNR=10 --> 10 db, SNR=3 --> 4.7712 db, SNR=2 --> 3.01 db, SNR=1 --> 0. db,
         SNR = 10.0 ** (SNR_in_dB / 10.0)
         u_ref_flat = u_ref.flatten()
         Sq_u_ref_flat = torch.pow(u_ref_flat, 2)

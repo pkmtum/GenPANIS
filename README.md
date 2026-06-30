@@ -1,8 +1,6 @@
 # GenPANIS
 
-**Generative Physics-Aware Neural Implicit Solvers**
-
-A latent-variable generative framework for forward and inverse PDE problems in multiphase media.
+**GenPANIS: A latent-variable generative framework for forward and inverse PDE problems in multiphase media**
 
 > M. Chatzopoulos and P.-S. Koutsourelakis, *GenPANIS: A latent-variable generative framework for forward and inverse PDE problems in multiphase media*, **Journal of Computational Physics** 564 (2026) 115140.
 > [https://doi.org/10.1016/j.jcp.2026.115140](https://doi.org/10.1016/j.jcp.2026.115140)

@@ -1,0 +1,26 @@
+{
+    "configurations": [
+
+        
+
+        
+        {
+            "name": "main.py",
+            "type": "python",
+            "request": "launch",
+            "program": "./main.py",
+            "console": "integratedTerminal",
+            "env": {
+            "LD_LIBRARY_PATH": "/usr/local/cuda/lib64:/usr/lib/x86_64-linux-gnu:${env:LD_LIBRARY_PATH}",
+            "PATH": "/usr/local/cuda/bin:${env:PATH}"}
+            
+        },
+        {
+            "name": "cgApprox",
+            "type": "python",
+            "request": "launch",
+            "program": "./model/pde/cgApprox.py",
+            "justMyCode": false
+        }
+    ]
+}

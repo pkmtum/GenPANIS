@@ -1,0 +1,15 @@
+{
+  "name": "fenics-dev",
+  "image": "fenics:latest",
+  "runArgs": ["--gpus", "all"],
+  "workspaceFolder": "/workspace",
+  "mounts": [
+    "source=${localWorkspaceFolder},target=/workspace,type=bind"
+  ],
+  "settings": {
+    "terminal.integrated.defaultProfile.linux": "sh"
+  },
+  "extensions": [
+    "ms-python.python"
+  ]
+}
